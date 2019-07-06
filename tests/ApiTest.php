@@ -18,4 +18,15 @@ class ApiTest extends TestCase
             env('APP_NAME') . " V" . env('APP_VERSION'), $this->response->getContent()
         );
     }
+
+    public function test_episodes_route_returns_episodes()
+    {
+        $this->get('/episodes');
+
+        $content = $this->response->getContent();
+        $data = json_decode($content, 1);
+
+        $this->assertTrue(array_key_exists("info", $data));
+        $this->assertTrue(array_key_exists("results", $data));
+    }
 }
