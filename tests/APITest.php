@@ -10,12 +10,12 @@ class ExampleTest extends TestCase
      *
      * @return void
      */
-    public function testExample()
+    public function test_home_page_returns_version()
     {
         $this->get('/');
 
         $this->assertEquals(
-            $this->app->version(), $this->response->getContent()
+            env('APP_NAME') . " V" . env('APP_VERSION'), $this->response->getContent()
         );
     }
 }
