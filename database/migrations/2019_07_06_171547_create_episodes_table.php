@@ -16,6 +16,7 @@ class CreateEpisodesTable extends Migration
         Schema::create('comments', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->string("ip_address");
+            $table->string("episode_id");
             $table->text("message");
             $table->timestamps();
         });

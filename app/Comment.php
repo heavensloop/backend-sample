@@ -8,9 +8,10 @@ class Comment extends Model
 {
     protected $guarded = ["id"];
 
-    public static function addNew($ip_address, $message) {
+    public static function addNew($ip_address, $episode_id, $message) {
         $comment = new self([
             "ip_address" => $ip_address,
+            "episode_id" => $episode_id,
             "message" => $message
         ]);
 
