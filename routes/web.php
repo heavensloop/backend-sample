@@ -12,3 +12,13 @@
 */
 
 $router->get('/', "HomeController@index");
+
+/**
+ * Route for retrieving list of episodes
+ */
+$router->get('/episodes', "ApiController@index");
+
+/**
+ * Route for adding a comment to an episode
+ */
+$router->put('/episodes/{episode_id}/add-comment', "ApiController@addComment");
