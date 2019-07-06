@@ -24,9 +24,11 @@ class ApiTest extends TestCase
         $this->get('/episodes');
 
         $content = $this->response->getContent();
-        $data = json_decode($content, 1);
+        $data = json_decode($content);
 
-        $this->assertTrue(array_key_exists("info", $data));
-        $this->assertTrue(array_key_exists("results", $data));
+        $this->assertTrue(isset($data->info));
+        $this->assertTrue(isset($data->results));
+
+        dd($data->results[0]);
     }
 }
