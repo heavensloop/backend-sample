@@ -34,4 +34,17 @@ class CommentsTest extends TestCase
 
         $comment = Comment::addNew("100.100.13.3", 12, $really_long_message);
     }
+
+    public function test_retrieve_comments_by_episode_id() {
+        $episode_id = 11;
+        $no_comments = 20;
+
+        factory(Comment::class, $no_comments)->create([
+            "episode_id" => $episode_id
+        ]);
+
+        $comments = Comment::forEpisode($episode_id)->get();
+
+        $this->assertEquals($no_comments, $comments->count());
+    }
 }

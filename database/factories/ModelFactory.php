@@ -20,7 +20,8 @@ $factory->define(App\User::class, function (Faker\Generator $faker) {
 
 $factory->define(App\Comment::class, function (Faker\Generator $faker) {
     return [
-        'ip_address' => $faker->ip2long,
+        'ip_address' => $faker->ipv4,
+        'episode_id' => $faker->randomNumber,
         'message' => $faker->sentence,
     ];
 });

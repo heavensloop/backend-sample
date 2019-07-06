@@ -43,4 +43,8 @@ class Comment extends Model
 
         $this->attributes["ip_address"] = $ip_address;
     }
+
+    public static function scopeForEpisode($query, $episode_id) {
+        return $query->whereEpisodeId($episode_id);
+    }
 }
