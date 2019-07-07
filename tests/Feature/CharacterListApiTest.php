@@ -80,4 +80,28 @@ class CharacterListApiTest extends TestCase
         
         $this->assertEquals($merged1, $merged2);
     }
+
+    public function test_character_list_can_be_filtered_by_status()
+    {
+        $status = "Alive";
+        $this->get(route("list-characters", ["episode" => 1]) . "?status={$status}");
+
+        $content = $this->response->getContent();
+        $data = json_decode($content);
+
+        $this->assertEquals(1, collect($data)->pluck("status")->unique()->count());
+        $this->assertEquals($status, collect($data)->pluck("status")->first());
+    }
+
+    public function test_character_list_can_be_filtered_by_gender()
+    {
+        $gender = "Male";
+        $this->get(route("list-characters", ["episode" => 1]) . "?gender={$gender}");
+
+        $content = $this->response->getContent();
+        $data = json_decode($content);
+
+        $this->assertEquals(1, collect($data)->pluck("gender")->unique()->count());
+        $this->assertEquals($gender, collect($data)->pluck("gender")->first());
+    }
 }

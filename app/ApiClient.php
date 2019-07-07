@@ -68,7 +68,7 @@ class ApiClient {
         return $response_body;
     }
 
-    function getCharactersInEpisode($episode_id, $filter=null) {
+    function getCharactersInEpisode($episode_id) {
         $episode = $this->getSingleEpisode($episode_id);
         $character_ids = collect($episode->characters)->map(function($episode_url) {
             $matches = [];

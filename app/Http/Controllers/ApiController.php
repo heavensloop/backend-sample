@@ -71,19 +71,25 @@ class ApiController extends Controller
     function getCharacters(Request $request, $episode_id) {
         $sort_by = $request->get("sortBy", null);
         $order = $request->get("order", "asc");
-        $gender = $request->get("gender", "");
-        $status = $request->get("status", "");
+        $gender = $request->get("gender", null);
+        $status = $request->get("status", null);
 
-        $filter_type = $gender ? $gender: $status;
+        if ($gender && $status) {
+            return response([
+                "error" => "Only one filter can be set at once"
+            ]);
+        }
+
+        $filter_type = $gender ? "gender": "status";
         $filter_value = $request->get($filter_type);
 
         $filter = [
-            "type" => $gender ? $gender: $status,
-            "value" => $request->get($filter_type)
+            "type" => $filter_type,
+            "value" => $filter_value
         ];
 
         $client = new ApiClient();
-        $result = collect($client->getCharactersInEpisode($episode_id, $filter))
+        $result = collect($client->getCharactersInEpisode($episode_id))
             ->map(function($character){
                 return [
                     "name" => $character->name,
@@ -100,6 +106,12 @@ class ApiController extends Controller
             });
             
         $sorted = $this->sortCharacters($result, $sort_by, $order);
+
+        if ($filter_value) {
+            $sorted = $sorted->filter(function($character) use ($filter_type, $filter_value) {
+                return strtolower($character[$filter_type]) == strtolower($filter_value);
+            });
+        }
         
         return response($sorted);
     }
