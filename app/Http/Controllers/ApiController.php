@@ -19,6 +19,7 @@ class ApiController extends Controller
 
         $episodes->results = collect($episodes->results)->map(function($episode) {
             return [
+                "id" => $episode->id,
                 "name" => $episode->name,
                 "episode" => $episode->episode,
                 "comments" => Comment::forEpisode($episode->id)->count()
@@ -29,14 +30,22 @@ class ApiController extends Controller
     }
 
     function getComments($episode_id) {
-        return response(Comment::forEpisode($episode_id)->orderBy('created_at', 'desc')
-            ->get(["ip_address", "message", "created_at"])->map(function($entry){
+        $comments = Comment::forEpisode($episode_id)
+            ->select(["ip_address", "message", "created_at"])
+            ->orderBy('created_at', 'desc')
+            ->paginate(20);
+
+        $comments->setCollection(
+            $comments->getCollection()->map(function($entry){
                 return [
                     "comment" => $entry->message,
                     "ip_address" => $entry->ip_address,
                     "time_created" => $entry->created_at
                 ];
-            }));
+            })
+        );
+
+        return response($comments);
     }
 
     function addComment(Request $request, $episode_id) {

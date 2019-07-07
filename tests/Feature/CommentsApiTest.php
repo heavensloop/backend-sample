@@ -52,7 +52,7 @@ class CommentsApiTest extends TestCase
     function test_episode_comment_list() {
         // Add some comments to an episode..
         $episode_id = 22;
-        $number_of_comments = 5;
+        $number_of_comments = 30;
         factory(Comment::class, $number_of_comments)->create([
             "episode_id" => $episode_id
         ]);
@@ -62,8 +62,8 @@ class CommentsApiTest extends TestCase
         $content = $this->response->getContent();
         $data = json_decode($content);
 
-        dd($data);
+        $this->assertEquals($number_of_comments, $data->total);
 
-        $this->assertEquals($number_of_comments, count($data));
+        $this->assertTrue($this->hasPaginationStructure($data));
     }
 }
