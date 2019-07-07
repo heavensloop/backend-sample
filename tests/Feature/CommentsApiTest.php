@@ -13,7 +13,7 @@ class CommentsApiTest extends TestCase
     {
         $comment = factory(Comment::class)->make();
 
-        $this->post("/episodes/{$comment->episode_id}/add-comment", [
+        $this->post(route("add-comment", ["episode" => $comment->episode_id]), [
             "message" => $comment->message
         ]);
 
@@ -35,7 +35,7 @@ class CommentsApiTest extends TestCase
     {
         $comment = factory(Comment::class)->states('long-comment')->make();
 
-        $this->post("/episodes/{$comment->episode_id}/add-comment", [
+        $this->post(route("add-comment", ["episode" => $comment->episode_id]), [
             "message" => $comment->message
         ]);
 
@@ -58,7 +58,7 @@ class CommentsApiTest extends TestCase
         ]);
 
         // Hit the comments api..
-        $this->get("/episodes/{$episode_id}/comments");
+        $this->get(route("list-comments", ["episode" => $episode_id]));
         $content = $this->response->getContent();
         $data = json_decode($content);
 

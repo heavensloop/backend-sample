@@ -25,14 +25,23 @@ $router->get('/episodes', [
 /**
  * Route for adding an anoynymous comment
  */
-$router->post('/episodes/{episode}/add-comment', "ApiController@addComment");
+$router->post('/episodes/{episode}/comments/add', [
+    "as" => "add-comment",
+    "uses" => "ApiController@addComment"
+]);
 
 /**
- * Route for retrieving list of comments
+ * Route for retrieving list of comments for an episode
  */
-$router->get('/episodes/{episode}/comments', "ApiController@getComments");
+$router->get('/episodes/{episode}/comments', [
+    "as" => "list-comments",
+    "uses" => "ApiController@getComments"
+]);
 
 /**
- * Route for retrieving list of comments
+ * Route for retrieving list of characters for an episode
  */
-$router->get('/episodes/{episode}/characters', "ApiController@getCharacters");
+$router->get('/episodes/{episode}/characters', [
+    "as" => "list-characters",
+    "uses" => "ApiController@getCharacters"
+]);

@@ -25,7 +25,7 @@ class EpisodesApiTest extends TestCase
 
     public function test_episodes_route_returns_episodes()
     {
-        $this->get('/episodes');
+        $this->get(route("episodes"));
 
         $content = $this->response->getContent();
         $data = json_decode($content);
@@ -38,7 +38,7 @@ class EpisodesApiTest extends TestCase
 
     public function test_episodes_are_ordered_by_release_date()
     {
-        $this->get('/episodes');
+        $this->get(route("episodes"));
 
         $content = $this->response->getContent();
         $data = json_decode($content);
