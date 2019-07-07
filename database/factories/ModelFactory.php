@@ -25,3 +25,9 @@ $factory->define(App\Comment::class, function (Faker\Generator $faker) {
         'message' => $faker->sentence,
     ];
 });
+
+$factory->state(App\Comment::class, 'long-comment', function (Faker\Generator $faker) {
+    return [
+        'message' => $faker->sentence(300)
+    ];
+});

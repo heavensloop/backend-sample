@@ -37,7 +37,14 @@ class ApiController extends Controller
         $ip_address = $request->ip();
 
         // Add the comment..
-        $comment = Comment::addNew($ip_address, $episode_id, $message);
+        try {
+            $comment = Comment::addNew($ip_address, $episode_id, $message);
+        } catch(\ErrorException $ex) {
+            return response([
+                "status" => "error",
+                "message" => $ex->getMessage()
+            ], $ex->getCode());
+        }
 
         return response([
             "status" => "success",

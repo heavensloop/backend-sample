@@ -3,6 +3,8 @@
 use Laravel\Lumen\Testing\DatabaseMigrations;
 use Laravel\Lumen\Testing\DatabaseTransactions;
 
+use App\Comment;
+
 class ApiTest extends TestCase
 {
     use DatabaseTransactions;
@@ -32,13 +34,12 @@ class ApiTest extends TestCase
         $this->assertTrue(isset($data->results));
     }
 
-
-
     public function test_add_new_comment()
     {
-        $episode_id = 22;
-        $this->post("/episodes/{$episode_id}/add-comment", [
-            "message" => "Hello World"
+        $comment = factory(Comment::class)->make();
+
+        $this->post("/episodes/{$comment->episode_id}/add-comment", [
+            "message" => $comment->message
         ]);
 
         $this->assertEquals(201, $this->response->getStatusCode());
@@ -46,6 +47,29 @@ class ApiTest extends TestCase
         $content = $this->response->getContent();
         $data = json_decode($content);
 
+        // Check the json structure for status and message..
+        $this->assertTrue(isset($data->status));
+        $this->assertTrue(isset($data->message));
+
+        // Check that comment is saved in database..
+        $this->assertTrue(Comment::whereEpisodeId($comment->episode_id)
+            ->whereMessage($comment->message)->exists());
+    }
+
+    public function test_get_error_message_for_long_comment()
+    {
+        $comment = factory(Comment::class)->states('long-comment')->make();
+
+        $this->post("/episodes/{$comment->episode_id}/add-comment", [
+            "message" => $comment->message
+        ]);
+
+        $this->assertEquals(413, $this->response->getStatusCode());
+
+        $content = $this->response->getContent();
+        $data = json_decode($content);
+
+        // Check the json structure for status and message..
         $this->assertTrue(isset($data->status));
         $this->assertTrue(isset($data->message));
     }
