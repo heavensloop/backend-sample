@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\ApiClient;
+use App\Comment;
 
 class ApiController extends Controller
 {
@@ -12,20 +13,18 @@ class ApiController extends Controller
 
         $episodes = $client->getEpisodes();
 
-        if (empty($episodes)) {
-            return [];
+        if (!isset($episodes) || empty($episodes->results)) {
+            return response([]);
         }
 
-        return collect($episodes)->map(function($episode) {
+        $episodes->results = collect($episodes->results)->map(function($episode) {
             return [
-                "id" => $episode->id,
                 "name" => $episode->name,
-                "comments" => Comment::forEpisode($episode->id)
+                "episode" => $episode->episode,
+                "comments" => Comment::forEpisode($episode->id)->count()
             ];
-        });
+        })->toArray();
 
-        dd($episodes);
-
-        return response($episodes);
+        return response((array) $episodes);
     }
 }

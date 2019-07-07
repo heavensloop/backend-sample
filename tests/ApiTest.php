@@ -28,7 +28,5 @@ class ApiTest extends TestCase
 
         $this->assertTrue(isset($data->info));
         $this->assertTrue(isset($data->results));
-
-        dd($data->results[0]);
     }
 }

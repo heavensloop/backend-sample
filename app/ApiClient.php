@@ -47,7 +47,7 @@ class ApiClient {
         $response_body = $response->getBody();
 
         if (preg_match("/application\/json/", "application/json")) {
-            return json_decode($response_body, 1);
+            return json_decode($response_body);
         }
 
         return $response_body;
