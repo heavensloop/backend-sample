@@ -15,7 +15,7 @@ class ApiController extends Controller
     public function index(Request $request) {
         $page = $request->get("page", 1);
         $client = new ApiClient();
-        $result = $client->getEpisodes();
+        $result = $client->getEpisodes($page);
         $episodes = collect($result->results)->map(function($episode) {
             $no_comments = Comment::forEpisode($episode->id)->count();
             return $this->mapEpisodeWithComments($episode, $no_comments);

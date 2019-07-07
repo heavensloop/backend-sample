@@ -38,8 +38,8 @@ class ApiClient {
         return rtrim($this->api_url, "/") . "/api/{$endpoint}";
     }
 
-    public function getEpisodes() {
-        $endpoint = $this->getUrl("episode");
+    public function getEpisodes($page) {
+        $endpoint = $this->getUrl("episode?page={$page}");
         $response = $this->client->get($endpoint);
 
         $response_code = $response->getStatusCode();
