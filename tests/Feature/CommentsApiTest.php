@@ -62,6 +62,8 @@ class CommentsApiTest extends TestCase
         $content = $this->response->getContent();
         $data = json_decode($content);
 
+        dd($data);
+
         $this->assertEquals($number_of_comments, count($data));
     }
 }
