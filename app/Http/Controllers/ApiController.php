@@ -27,4 +27,28 @@ class ApiController extends Controller
 
         return response((array) $episodes);
     }
+
+    function getComments($episode_id) {
+
+    }
+
+    function addComment(Request $request, $episode_id) {
+        $message = $request->get("message", "");
+        $ip_address = $request->ip();
+
+        // Add the comment..
+        $comment = Comment::addNew($ip_address, $episode_id, $message);
+
+        return response([
+            "status" => "success",
+            "message" => "The comment was added successfully"
+        ], 201);
+    }
+
+    function getCharacters($episode_id) {
+        $client = new ApiClient();
+        $episodes = $client->getCharactersInEpisode($episode_id);
+
+        return $episodes;
+    }
 }

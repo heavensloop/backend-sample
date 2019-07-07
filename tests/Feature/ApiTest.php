@@ -5,6 +5,8 @@ use Laravel\Lumen\Testing\DatabaseTransactions;
 
 class ApiTest extends TestCase
 {
+    use DatabaseTransactions;
+
     /**
      * A basic test example.
      *
@@ -28,5 +30,23 @@ class ApiTest extends TestCase
 
         $this->assertTrue(isset($data->info));
         $this->assertTrue(isset($data->results));
+    }
+
+
+
+    public function test_add_new_comment()
+    {
+        $episode_id = 22;
+        $this->post("/episodes/{$episode_id}/add-comment", [
+            "message" => "Hello World"
+        ]);
+
+        $this->assertEquals(201, $this->response->getStatusCode());
+
+        $content = $this->response->getContent();
+        $data = json_decode($content);
+
+        $this->assertTrue(isset($data->status));
+        $this->assertTrue(isset($data->message));
     }
 }

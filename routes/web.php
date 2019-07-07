@@ -21,12 +21,12 @@ $router->get('/episodes', "ApiController@index");
 /**
  * Route for adding an anoynymous comment
  */
-$router->get('/episodes/{episode}/add-comment', "ApiController@getComments");
+$router->post('/episodes/{episode}/add-comment', "ApiController@addComment");
 
 /**
  * Route for retrieving list of comments
  */
-$router->get('/episodes/{episode}/comments', "ApiController@addComment");
+$router->get('/episodes/{episode}/comments', "ApiController@getComments");
 
 /**
  * Route for retrieving list of comments
