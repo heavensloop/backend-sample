@@ -52,4 +52,41 @@ class ApiClient {
 
         return $response_body;
     }
+
+    public function getSingleEpisode($episode_id) {
+        $endpoint = $this->getUrl("episode/{$episode_id}");
+        $response = $this->client->get($endpoint);
+
+        $response_code = $response->getStatusCode();
+        $content_type = $response->getHeaderLine('content-type');
+        $response_body = $response->getBody();
+
+        if (preg_match("/application\/json/", "application/json")) {
+            return json_decode($response_body);
+        }
+
+        return $response_body;
+    }
+
+    function getCharactersInEpisode($episode_id, $filter=null) {
+        $episode = $this->getSingleEpisode($episode_id);
+        $character_ids = collect($episode->characters)->map(function($episode_url) {
+            $matches = [];
+            preg_match_all("/character\/(\d+)/", $episode_url, $matches);
+            return $matches[1][0];
+        });
+
+        $endpoint = $this->getUrl("character/" . $character_ids->implode(","));
+        $response = $this->client->get($endpoint);
+
+        $response_code = $response->getStatusCode();
+        $content_type = $response->getHeaderLine('content-type');
+        $response_body = $response->getBody();
+
+        if (preg_match("/application\/json/", "application/json")) {
+            return json_decode($response_body);
+        }
+
+        return $response_body;
+    }
 }

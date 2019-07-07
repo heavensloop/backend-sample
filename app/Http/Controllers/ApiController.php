@@ -68,10 +68,57 @@ class ApiController extends Controller
         ], 201);
     }
 
-    function getCharacters($episode_id) {
-        $client = new ApiClient();
-        $episodes = $client->getCharactersInEpisode($episode_id);
+    function getCharacters(Request $request, $episode_id) {
+        $sort_by = $request->get("sortBy", null);
+        $order = $request->get("order", "asc");
+        $gender = $request->get("gender", "");
+        $status = $request->get("status", "");
 
-        return $episodes;
+        $filter_type = $gender ? $gender: $status;
+        $filter_value = $request->get($filter_type);
+
+        $filter = [
+            "type" => $gender ? $gender: $status,
+            "value" => $request->get($filter_type)
+        ];
+
+        $client = new ApiClient();
+        $result = collect($client->getCharactersInEpisode($episode_id, $filter))
+            ->map(function($character){
+                return [
+                    "name" => $character->name,
+                    "status" => $character->status,
+                    "species" => $character->species,
+                    "type" => $character->type,
+                    "gender" => $character->gender,
+                    "origin" => $character->origin,
+                    "location" => $character->location,
+                    "image" => $character->image,
+                    "url" => $character->url,
+                    "created" => $character->created
+                ];
+            });
+            
+        $sorted = $this->sortCharacters($result, $sort_by, $order);
+        
+        return response($sorted);
+    }
+
+    function sortCharacters($characters, $by=null, $order="asc") {
+        if (!$by) {
+            return $characters;
+        }
+
+        if ($order === "asc") {
+            $sorted = $characters->sortBy(function($character) use ($by) {
+                return $character[$by];
+            });
+        } else {
+            $sorted = $characters->sortByDesc(function($character) use ($by) {
+                return $character[$by];
+            });
+        }
+
+        return $sorted;
     }
 }

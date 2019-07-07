@@ -34,8 +34,6 @@ class EpisodesApiTest extends TestCase
         $this->hasPaginationStructure($data);
     }
 
-
-
     public function test_episodes_are_ordered_by_release_date()
     {
         $this->get(route("episodes"));
