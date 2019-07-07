@@ -19,6 +19,16 @@ $router->get('/', "HomeController@index");
 $router->get('/episodes', "ApiController@index");
 
 /**
- * Route for adding a comment to an episode
+ * Route for adding an anoynymous comment
  */
-$router->put('/episodes/{episode_id}/add-comment', "ApiController@addComment");
+$router->get('/episodes/{episode}/add-comment', "ApiController@getComments");
+
+/**
+ * Route for retrieving list of comments
+ */
+$router->get('/episodes/{episode}/comments', "ApiController@addComment");
+
+/**
+ * Route for retrieving list of comments
+ */
+$router->get('/episodes/{episode}/characters', "ApiController@getCharacters");
