@@ -16,7 +16,11 @@ $router->get('/', "HomeController@index");
 /**
  * Route for retrieving list of episodes
  */
-$router->get('/episodes', "ApiController@index");
+
+$router->get('/episodes', [
+    "as" => "episodes",
+    "uses" => "ApiController@index"
+]);
 
 /**
  * Route for adding an anoynymous comment

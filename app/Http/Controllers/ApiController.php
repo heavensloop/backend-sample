@@ -5,28 +5,28 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\ApiClient;
 use App\Comment;
+use App\ResponseTransformer;
+use Carbon\Carbon;
 
 class ApiController extends Controller
 {
+    use ResponseTransformer;
+
     public function index(Request $request) {
+        $page = $request->get("page", 1);
         $client = new ApiClient();
-
-        $episodes = $client->getEpisodes();
-
-        if (!isset($episodes) || empty($episodes->results)) {
-            return response([]);
-        }
-
-        $episodes->results = collect($episodes->results)->map(function($episode) {
-            return [
-                "id" => $episode->id,
-                "name" => $episode->name,
-                "episode" => $episode->episode,
-                "comments" => Comment::forEpisode($episode->id)->count()
-            ];
+        $result = $client->getEpisodes();
+        $episodes = collect($result->results)->map(function($episode) {
+            $no_comments = Comment::forEpisode($episode->id)->count();
+            return $this->mapEpisodeWithComments($episode, $no_comments);
+        })->sortBy(function($episode) {
+            return strtotime($episode["release_date"]);
         })->toArray();
 
-        return response((array) $episodes);
+        $url_template = route('episodes');
+        $transformed = $this->transformPagination($result, $episodes, $url_template, $page);
+
+        return response($transformed);
     }
 
     function getComments($episode_id) {
@@ -36,7 +36,7 @@ class ApiController extends Controller
             ->paginate(20);
 
         $comments->setCollection(
-            $comments->getCollection()->map(function($entry){
+            $comments->getCollection()->map(function($entry) {
                 return [
                     "comment" => $entry->message,
                     "ip_address" => $entry->ip_address,
