@@ -29,7 +29,7 @@ class ApiController extends Controller
     }
 
     function getComments($episode_id) {
-
+        return response(Comment::forEpisode($episode_id)->get());
     }
 
     function addComment(Request $request, $episode_id) {

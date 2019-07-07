@@ -48,4 +48,20 @@ class CommentsApiTest extends TestCase
         $this->assertTrue(isset($data->status));
         $this->assertTrue(isset($data->message));
     }
+
+    function test_episode_comment_list() {
+        // Add some comments to an episode..
+        $episode_id = 22;
+        $number_of_comments = 5;
+        factory(Comment::class, $number_of_comments)->create([
+            "episode_id" => $episode_id
+        ]);
+
+        // Hit the comments api..
+        $this->get("/episodes/{$episode_id}/comments");
+        $content = $this->response->getContent();
+        $data = json_decode($content);
+
+        $this->assertEquals($number_of_comments, count($data));
+    }
 }
